@@ -1,0 +1,17 @@
+{
+  "name": "algojs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:select": "jest --testPathPattern=",
+    "test:algo": "jest --findRelatedTests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
