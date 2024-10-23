@@ -16,7 +16,7 @@
 
 class Node {
   constructor(key, value, ttl) {
-    (this.key = key), (this.value = value), (this.ttl = new Date.now() + ttl); // Expiration Time
+    (this.key = key), (this.value = value), (this.expiry = Date.now() + ttl); // Expiration Time
     this.prev = null;
     this.next = null;
   }
@@ -26,39 +26,114 @@ class LRUCache {
   constructor(capacity, ttl) {
     (this.capacity = capacity), (this.ttl = ttl);
     this.size = 0;
+    this.cache = new Map();
     this.head = new Node(null, null, 0);
     this.tail = new Node(null, null, 0);
     this.head.next = this.tail;
     this.tail.prev = this.head;
   }
 
-  _removeNode(node) {}
+  _removeNode(node) {
+    node.next.prev = node.prev;
+    node.prev.next = node.next;
+  }
 
-  _addMoveToHead(node) {}
+  _addNodeToHead(node) {
+    node.next = this.head.next;
+    node.prev = this.head;
+    this.head.next.prev = node;
+    this.head.next = node;
+  }
 
-  _moveToHead(node) {}
+  _moveToHead(node) {
+    this._removeNode(node);
+    this._addNodeToHead(node);
+  }
 
-  _popTail() {}
+  _popTail() {
+    let currTail = this.tail.prev;
+    this._removeNode(currTail);
+    return currTail;
+  }
 
-  _isExpired(node) {}
+  _isExpired(node) {
+    return Date.now() > node.expiry;
+  }
 
-  get(key) {}
+  get(key) {
+    let currNode = this.cache.get(key);
+    if (!currNode || this._isExpired(currNode)) {
+      if (currNode) {
+        this.remove(key); // remove expired node
+      }
+      return -1;
+    }
+    this._moveToHead(currNode);
+    return currNode.value;
+  }
 
-  put(key, value) {}
+  put(key, value) {
+    let node = this.cache.get(key);
+    if (node) {
+      node.expiry = this.ttl + Date.now();
+      node.value = value;
+      this._moveToHead(node);
+    } else {
+      const newNode = new Node(key, value, this.ttl);
+      this.cache.set(key, newNode);
+      this._addNodeToHead(newNode);
+      this.size++;
+      if (this.size > this.capacity) {
+        let lruNode = this._popTail();
+        this.cache.delete(lruNode.key);
+        this.size--;
+      }
+    }
+  }
 
-  peek(key) {}
+  peek(key) {
+    let node = this.cache.get(key);
+    if (!node || this._isExpired(node)) {
+      return -1;
+    }
+    return node.value;
+  }
 
-  remove(key) {}
+  remove(key) {
+    const node = this.cache.get(key);
+    if (!node) return false;
+    this._removeNode(node);
+    this.cache.delete(key);
+    this.size--;
+    return true;
+  }
 
-  size() {}
+  getSize() {
+    return this.size;
+  }
 
-  clear() {}
+  clear() {
+    this.size = 0;
+    this.cache.clear();
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
 
-  updateTTL(key, newTtl) {}
+  updateTTL(key, newTtl) {
+    const node = this.cache.get(key);
+    if (!node || this._isExpired(node)) {
+      return false;
+    }
+    node.expiry = Date.now() + newTtl;
+    this._moveToHead(node);
+    return true;
+  }
 
-  isExpired(key) {}
-
-  getAllItems() {}
-
-  getAllKeys() {}
+  isExpired(key) {
+    const node = this.cache.get(key);
+    if (!node) {
+      return true;
+    }
+    return this._isExpired(node);
+  }
 }
