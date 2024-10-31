@@ -49,7 +49,51 @@ class MinHeap {
     return min;
   }
 
-  insert(value) {}
+  insert(value) {
+    this.heap.push(value); // push the value to the end of the aaray
+    let index = this.heap.length - 1; // take the index of the last element;
+    while (index > 0) {
+      // iterate through array till the index 0
+      let parentIdx = this.getParent(index);
+      if (this.heap[parentIdx] > this.heap[index]) {
+        [this.heap[parentIdx], this.heap[index]] = [
+          this.heap[index],
+          this.heap[parentIdx],
+        ];
+        index = parentIdx;
+      } else {
+        break;
+      }
+    }
+  }
 
-  heapifyDown(index) {}
+  heapifyDown(index) {
+    let smallestIdx = index;
+    let leftIdx = 2 * index + 1; // take the left child index of the tree
+    let rightIdx = 2 * index + 2; // take the right child index of the tree
+
+    if (
+      leftIdx < this.heap.length &&
+      this.heap[leftIdx] < this.heap[smallestIdx]
+    ) {
+      // check our left child is smaller than current index
+      smallestIdx = leftIdx;
+    }
+    if (
+      rightIdx < this.heap.length &&
+      this.heap[rightIdx] < this.heap[smallestIdx]
+    ) {
+      // check our right hcild is smaller than current index
+      smallestIdx = rightIdx;
+    }
+
+    if (smallestIdx !== index) {
+      // if any of the index changes with the child then swap the value and position with the most smallest position
+      [this.heap[index], this.heap[smallestIdx]] = [
+        this.heap[smallestIdx],
+        this.heap[index],
+      ];
+      this.heapifyDown(smallestIdx);
+    }
+  }
 }
