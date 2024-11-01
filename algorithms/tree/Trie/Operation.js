@@ -12,6 +12,7 @@
 // Prefix end with count
 // Longest common prefix
 // Longest common string
+// Count number of strings
 // Count Distinct Sub-string with empty substring
 // Autocomplete suggestions
 // Spell checker
@@ -26,6 +27,7 @@ class TrieNode {
 class Trie {
   constructor() {
     this.root = new TrieNode();
+    this.wordCount = 0;
   }
 
   insert(word) {
@@ -37,7 +39,11 @@ class Trie {
       }
       rootNode = rootNode.children[child]; // add character to the root
     }
-    rootNode.endOfWord = true; // mark the endofword boolean to true to indicate the word is added and last character is end of the word
+    // mark the endofword boolean to true to indicate the word is added and last character is end of the word
+    if (!rootNode.endOfWord) {
+      rootNode.endOfWord = true;
+      this.wordCount++;
+    }
   }
 
   search(word) {
@@ -70,6 +76,7 @@ class Trie {
     if (idx === word.length) {
       if (!node.endOfWord) return false; // word not present;
       node.endOfWord = false;
+      this.wordCount--;
       return Object.keys(node.children).length === 0;
     }
 
@@ -89,4 +96,58 @@ class Trie {
 
     return false;
   }
+
+  countWords() {
+    return this.wordCount;
+  }
+
+  // Count words starting with a given prefix
+  prefixStartCount(prefix) {
+    let rootNode = this.root;
+    for (let char of prefix) {
+      if (!rootNode.children[char]) return 0;
+      rootNode = rootNode.children[char];
+    }
+    return this._countWord(rootNode);
+  }
+
+  _countWord(node) {
+    let count = node.endOfWord ? 1 : 0;
+    for (let char in node.children) {
+      count += this._countWord(node.children[char]);
+    }
+    return count;
+  }
+
+  autoComplete(prefix) {
+    let rootNode = this.root;
+    for (let char of prefix) {
+      if (!rootNode.children[char]) return [];
+      rootNode = rootNode.children[char];
+    }
+    return this._collectionOfWord(rootNode, prefix);
+  }
+
+  _collectionOfWord(node, prefix) {
+    let result = [];
+    if (node.endOfWord) result.push(prefix);
+    for (let char in node.children) {
+      result.push(
+        ...this._collectionOfWord(node.children[char], prefix + char)
+      );
+    }
+    return result;
+  }
 }
+
+// Usage Example
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("app");
+trie.insert("apricot");
+trie.insert("banana");
+
+// console.log(trie.search("apple")); // true
+// console.log(trie.prefixStartCount("app")); // 2
+// console.log(trie.countWords()); // 4
+// console.log(trie.autoComplete("ap")); // ["apple", "app", "apricot"]
