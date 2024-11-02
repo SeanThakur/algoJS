@@ -3,7 +3,7 @@
 const heapify = (arr, n, i) => {
   let largest = i; // Initialize largest as root
   let left = 2 * i + 1; // left = 2*i + 1
-  let right = 2 * i + 2; // left = 2*i + 2
+  let right = 2 * i + 2; // right = 2*i + 2
 
   // If left child is larger than root
   if (left < n && arr[left] > arr[largest]) {
