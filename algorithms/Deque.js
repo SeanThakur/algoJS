@@ -17,3 +17,49 @@
 // Sliding Window problems in arrays or strings.
 // Palindrome Checker, where you need to check characters from both ends.
 // Back-and-Forth Navigation, as in browser history.
+
+class Deque {
+  constructor() {
+    this.item = [];
+  }
+
+  addFront(value) {
+    this.item.unshift(value);
+  }
+
+  addBack(value) {
+    this.item.push(value);
+  }
+
+  removeFront() {
+    if (this.isEmpty()) {
+      return "Empty";
+    }
+
+    return this.item.shift();
+  }
+
+  removeBack() {
+    if (this.isEmpty()) {
+      return "Empty";
+    }
+
+    return this.item.pop();
+  }
+
+  size() {
+    return this.item.length;
+  }
+
+  isEmpty() {
+    return this.item.length === 0;
+  }
+
+  peekFront() {
+    return this.item[0];
+  }
+
+  peekBack() {
+    return this.item[this.item.length - 1];
+  }
+}
