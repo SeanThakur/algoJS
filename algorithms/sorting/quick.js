@@ -55,7 +55,11 @@ const quickSortWithRandomPivot = (arr) => {
     }
   }
 
-  return [...quickSort(left), pivot, ...quickSort(right)];
+  return [
+    ...quickSortWithRandomPivot(left),
+    pivot,
+    ...quickSortWithRandomPivot(right),
+  ];
 };
 
 module.exports = {
