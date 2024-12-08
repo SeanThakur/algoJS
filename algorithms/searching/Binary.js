@@ -5,7 +5,7 @@ const binarySearchInArraysOfNumber = (arr, target) => {
   let right = arr.length - 1;
 
   while (left <= right) {
-    let mid = Math.floor((left + right) / 2);
+    let mid = Math.floor((left + right) / 2); // other formula for finding mid is left + (right - left) / 2
 
     if (arr[mid] === target) {
       return target; // return this mf out, we know we got it!!
