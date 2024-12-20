@@ -67,7 +67,6 @@ const ringBuffer = new RingBuffer(3);
 ringBuffer.enqueue(1); // Buffer: [1, , ]
 ringBuffer.enqueue(2); // Buffer: [1, 2, ]
 ringBuffer.enqueue(3); // Buffer: [1, 2, 3], now full
-
 ringBuffer.enqueue(4); // Buffer: [4, 2, 3], overwrites oldest data (1)
 // console.log(ringBuffer.dequeue()); // Output: 2
 // console.log(ringBuffer.dequeue()); // Output: 3

@@ -22,14 +22,14 @@ const searchElementInRotatedArrWithUniqueValues = (arr, target) => {
     if (arr[left] <= arr[mid]) {
       // left to mid sub array is sorted
       if (arr[left] <= target && target <= arr[mid]) {
-        //   arr[left] < target < arr[mid] it implies that target is within our sub array
+        //   arr[left] < target < arr[mid] it implies that target is within our left sub array
         right = mid - 1; // eliminate right subarray
       } else {
         left = mid + 1; // eliminate left subarray
       }
     } else {
       if (arr[mid] <= target && target <= arr[right]) {
-        // arr[mid] < target < arr[right] it implies that target is within our sub array
+        // arr[mid] < target < arr[right] it implies that target is within our right sub array
         left = mid + 1;
       } else {
         right = mid - 1;

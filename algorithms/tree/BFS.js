@@ -47,8 +47,7 @@ const bfsForAdjecentList = (graph, start) => {
 
 // 2. For Normal Array based input
 
-// function for tree node
-
+// Factory function for tree node it works just like a constructor
 const TreeNode = (value) => ({
   value,
   left: null,
@@ -61,8 +60,8 @@ const creteTreeFromArray = (arr) => {
   const createNode = (index) => {
     if (index >= arr.length || arr[index] === null) return null;
     let node = TreeNode(arr[index]);
-    node.left = creteTreeFromArray(2 * index + 1); // adding node to the left of the tree
-    node.right = creteTreeFromArray(2 * index + 2); // adding node to the right of the tree
+    node.left = createNode(2 * index + 1); // adding node to the left of the tree
+    node.right = createNode(2 * index + 2); // adding node to the right of the tree
     return node;
   };
 
