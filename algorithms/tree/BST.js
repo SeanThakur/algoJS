@@ -84,3 +84,19 @@ const getMinimumValue = (node) => {
 
   return node;
 };
+
+const validBST = (root) => {
+  return isValid(root, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
+};
+
+const isValid = (root, minVal, maxVal) => {
+  if (root == null) return true;
+  if (root.value >= maxVal || root.value <= minVal) {
+    return false;
+  }
+
+  return (
+    isValid(root.left, minVal, root.value) &&
+    isValid(root.right, root.value, maxVal)
+  );
+};

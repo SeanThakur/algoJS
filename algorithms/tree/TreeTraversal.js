@@ -65,6 +65,7 @@ class BinaryTreeTraversal {
     this.preOrder(node.right); // visiting right side of the tree
   }
 
+  // inorder of any Binary Tree is always sorted
   inOrder(node = this.root) {
     if (!node) return;
     this.inOrder(node.left); // visiting left side of the tree
