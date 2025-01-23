@@ -232,6 +232,7 @@ class CustomLinkedList {
     }
     
     // common operations 
+
     public void removeDuplicates() {
         // Given a sorted linked list, remove duplicate nodes such that each element appears only once.
         if(head == null) return;
@@ -666,7 +667,9 @@ class BinaryTreeOperations {
     public int diameter(TreeNode root) {
         // The diameter is the longest path between two nodes in the tree, which might or might not pass through the root.
         // we can't use normal count variable instead of in[] because
-        // you can't directly modify a primitive int within a helper function in Java, because Java passes primitives by value. This means that when you pass maxDiameter into calculateHeight, the function will only receive a copy of the value, and any changes to it won't reflect back to the caller.
+        // you can't directly modify a primitive int within a helper function in Java, because Java passes primitives by value. 
+        // This means that when you pass maxDiameter into calculateHeight, the function will only receive a copy of the value, 
+        // and any changes to it won't reflect back to the caller.
         int[] maxDiameter = new int[1];
         calculateHeight(root, maxDiameter);
         return maxDiameter[0];
@@ -683,6 +686,8 @@ class BinaryTreeOperations {
     
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         // The LCA is the lowest node that is an ancestor of both nodes. This problem is commonly asked in interviews.
+        // that is an ancestor of both a given pair of nodes. For example, in a family tree, 
+        // the LCA of two people would be the most recent common ancestor of both individuals.
         if(root == null || p == null || q == null) {
             return root;
         }
@@ -699,7 +704,7 @@ class BinaryTreeOperations {
         }
     }
 
-     public int leafSum(TreeNode root) {
+    public int leafSum(TreeNode root) {
         if(root == null) return 0;
         if(root.left == null && root.right == null) return root.val;
         return leafSum(root.left) + leafSum(root.right);
@@ -717,7 +722,7 @@ class BinaryTreeOperations {
         if(
             leftHeight == -1 ||
             rightHeight == -1 ||
-            Math.abs(leftHeight - rightHeight) > -1
+            Math.abs(leftHeight - rightHeight) > 1
         ) {
             return -1;
         }
@@ -737,14 +742,70 @@ class BinaryTreeOperations {
         }
         return isBSTUtil(root.left, min, root.val) && isBSTUtil(root.right, root.val, max);
     }
+
+    //BST operations and implementation
+    public TreeNode BSTInseart(TreeNode root, int val) {
+        if(root == null) return new TreeNode(val);
+
+        if(val < root.val) {
+            root.left = BSTInseart(root.left, val);
+        } else {
+            root.right = BSTInseart(root.right, val);
+        }
+
+        return root;
+    }
+
+    public boolean BSTSearch(TreeNode root, int val) {
+        if(root == null) return false;
+        if(root.val == val) return true;
+        if(val < root.val) return BSTSearch(root.left, val);
+        return BSTSearch(root.right, val);
+    }
+
+    public TreeNode BSTDelete(TreeNode root, int key) {
+        if (root == null) return null;
+
+        if (key < root.val) {
+            root.left = BSTDelete(root.left, key);
+        } else if (key > root.val) {
+            root.right = BSTDelete(root.right, key);
+        } else {
+            if (root.left == null) return root.right;
+            if (root.right == null) return root.left;
+
+            root.val = minValue(root.right);
+            root.right = BSTDelete(root.right, root.val);
+        }
+        return root;
+    }
+
+    public int minValue(TreeNode root) {
+        int min = root.val;
+        while (root.left != null) {
+            min = root.left.val;
+            root = root.left;
+        }
+        return min;
+    }
+
+    //DFS in Binary Tree is a preorder traversal
+
+    //BFS in level order traversal in Binary Tree
+    public void levelOrderTraversal(TreeNode root) {
+        if(root == null) return;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+
+        while(!queue.isEmpty()) {
+            TreeNode current = queue.poll();
+            System.out.println(current.val, " ");
+            if(current.left != null) queue.add(current.left);
+            if(current.right != null) queue.add(current.right);
+        }
+    }
+
 }
-
-//BST operations and implementation
-// 1. Construct Binary Search Tree from Preorder Traversal
-
-//DFS
-
-//BFS
 
 
 class Main {
@@ -1001,7 +1062,7 @@ class Main {
     public static void heapify(int[] arr, int n, int i) {
         int largest = i;
         int left = 2 * i + 1;
-        int right = 2* i + 2;
+        int right = 2 * i + 2;
         
         if(left < n && arr[left] > arr[largest]) {
             largest = left;
