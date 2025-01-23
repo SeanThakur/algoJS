@@ -805,6 +805,26 @@ class BinaryTreeOperations {
         }
     }
 
+    // Construct Binary Search Tree (BST) from Preorder Traversal
+    public TreeNode constructBST(int[] preorder) {
+        int[] index = {0};  
+        return buildTree(preorder, Integer.MIN_VALUE, Integer.MAX_VALUE, index);
+    }
+
+    public TreeNode buildTree(int[] preorder, int min, int max, int[] index) {
+        if (index[0] >= preorder.length) return null;
+        
+        int val = preorder[index[0]];
+        if (val < min || val > max) return null;
+        
+        TreeNode node = new Node(val);
+        index[0]++;
+        node.left = buildTree(preorder, min, val, index);
+        node.right = buildTree(preorder, val, max, index);
+        
+        return node;
+    }
+
 }
 
 
