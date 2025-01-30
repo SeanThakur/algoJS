@@ -308,8 +308,9 @@ class CustomLinkedList {
         if(head == null || head.next == null) return head;
          // Split the list into two halves
         Node mid = getMiddle(head);
+        Node right = mid;
         Node left = sortList(head);
-        Node right = sortList(mid);
+        right = sortList(right);
         
         return merge(left, right);
     }
@@ -331,16 +332,27 @@ class CustomLinkedList {
     }
     
     public Node merge(Node left, Node right) {
-        if(left == null) return right;
-        if(right == null) return left;
-        
-        if(left.data < right.data) {
-            left.next = merge(left.next, right);
-            return left;
-        }else {
-            right.next = merge(left, right.next);
-            return right;
+        Node dummy = new Node(-1);
+        Node current = dummy;
+
+        while(left != null && right != null) {
+            if(left.val < right.val) {
+                current.next = left;
+                left = left.next;
+            } else {
+                current.next = right;
+                right = right.next;
+            }
+            current = current.next;
         }
+
+        if(left != null) {
+            current.next = left;
+        }else if(right != null) {
+            current.next = right;
+        }
+
+        return dummy.next;
     }
     
     public Node mergeSortedLists(Node head1, Node head2) {
