@@ -1130,24 +1130,63 @@ class Main {
         
         return arr;
     }
+
+    public static void countingSort(int[] arr, int pos) {
+        int n = arr.length;
+        int[] output = new int[n];
+        int[] count = new int[10]; // Count arr to store the frequency of item occure in array
+
+        for(int i = 0; i < n; i++) {
+            count[(arr[i] / pos) % 10]++; // (arr[i] / pos) % 10 it is used for finding right position of array item
+        }
+
+        for(int i = 1; i < 10; i++) {
+            count[i] += count[i-1]; // Change count[i] so that it now contains the actual position of this digit in output[]
+        }
+
+        for(int i = n-1; i >= 0; i--) {
+            output[count[(arr[i] / pos) % 10] - 1] = arr[i];
+            count[(arr[i] / pos) % 10]--;
+        }
+
+        System.arraycopy(output, 0, arr, 0, n);
+    }
+
+    public static void radixSort(int[] arr) {
+        int max = Arrays.stream(arr).max().getAsInt();
+
+        for(int pos = 1; max / pos > 0; pos *= 10) {
+            countingSort(arr, pos);
+        }
+    }
+
+     public static void printArray(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println(); 
+    }
     
     public static void main(String[] args) {
         System.out.println("Try programiz.pro");
         int[] arr = {4,5,6,-1,-2,0,1,2,3};
         ArrayList<Integer> sortArr = new ArrayList<>(Arrays.asList(4,5,6,-1,-2,0,1,2,3));
         int[] index = heapSort(arr);
+        int[] arr2 = {170, 45, 75, 90, 802, 24, 2, 66};
         // System.out.println(Arrays.toString(index));
+        // radixSort(arr2);
+        // printArray(arr2);
         
-        CustomStack stack = new CustomStack(5);
+        // CustomStack stack = new CustomStack(5);
         
-        stack.push(4);
-        stack.push(3);
+        // stack.push(4);
+        // stack.push(3);
         
-        CustomQueueSameAsCircularQueue queue = new CustomQueueSameAsCircularQueue(5);
+        // CustomQueueSameAsCircularQueue queue = new CustomQueueSameAsCircularQueue(5);
         
-        queue.enqueue(4);
-        queue.enqueue(2);
-        queue.display();
+        // queue.enqueue(4);
+        // queue.enqueue(2);
+        // queue.display();
     
     }
 }
