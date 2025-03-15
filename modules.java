@@ -1511,9 +1511,22 @@ class Main {
     }
 }
 
+    public static List<Integer> extractAllSubset(int[] arr, int i) {
+        List<Integer> subset = new ArrayList<>();
+        int j = 0;
+        while(i > 0) {
+            int i_bit = i & 1;
+            if(i_bit != 0) {
+                subset.add(arr[j]);
+            }
+            j++;
+            i = i >> 1;
+        }
+        return subset;
+    }
+
     
     public static void main(String[] args) {
-        System.out.println("Try programiz.pro");
         int[] arr = {4,5,6,-1,-2,0,1,2,3};
         ArrayList<Integer> sortArr = new ArrayList<>(Arrays.asList(4,5,6,-1,-2,0,1,2,3));
         int[] index = heapSort(arr);
@@ -1532,6 +1545,15 @@ class Main {
         // queue.enqueue(4);
         // queue.enqueue(2);
         // queue.display();
-    
+
+        // Finding all the subset within the given array
+        
+        // int[] subset = new int[]{1,2,3,4};
+        // List<List<Integer>> subset_list = new ArrayList<>();
+        // int subset_length = subset.length;
+        // for(int i = 0; i < (1 << subset_length); i++) {
+        //     subset_list.add(extract(subset, i));
+        // }
+        // System.out.println(subset_list);
     }
 }
