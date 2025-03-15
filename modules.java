@@ -1166,6 +1166,351 @@ class Main {
         }
         System.out.println(); 
     }
+
+    // BFS on Adjecent List
+    public static ArrayList<Integer> bfsOfGraph(int V, ArrayList<ArrayList<Integer>> adj) {
+        // code here
+        ArrayList<Integer> bfs = new ArrayList<>();
+        boolean visited[] = new boolean[V];
+        Queue<Integer> que = new LinkedList<>();
+        
+        visited[0] = true;
+        que.add(0);
+        
+        while(!que.isEmpty()) {
+            int node = que.poll();
+            bfs.add(node);
+            
+            for(int it : adj.get(node)) {
+                if(visited[it] != true) {
+                    visited[it] = true;
+                    que.add(it);
+                }
+            }
+        }
+        
+        return bfs;
+    }
+
+    // DFS on Adjecent List
+    public static void dfs(
+        int node, 
+        boolean visited[], 
+        ArrayList<ArrayList<Integer>> adj,
+        ArrayList<Integer> list
+    ) 
+    {
+        list.add(node);
+        visited[node] = true;
+        
+        for(int it : adj.get(node)) {
+            if(!visited[it] == true) {
+                dfs(it, visited, adj, list);
+            }
+        }
+        
+    }
+    // Function to return a list containing the DFS traversal of the graph.
+    public static ArrayList<Integer> dfsOfGraph(ArrayList<ArrayList<Integer>> adj) {
+        // Code here
+        boolean visited[] = new boolean[adj.size() + 1];
+        ArrayList<Integer> list = new ArrayList<>();
+        
+        visited[0] = true;
+        dfs(0, visited, adj, list);
+        return list;
+    }
+
+    // Function to detect cycle in an undirected graph.
+    class Pair {
+        int node;
+        int parent;
+        Pair(int _node, int _parent) {
+            this.node = _node;
+            this.parent = _parent;
+        }
+    }
+
+    class Solution {
+        public static boolean checkCycle(
+            int node, 
+            int n, 
+            ArrayList<ArrayList<Integer>> adj,
+            boolean[] visited
+        ) {
+            visited[node] = true;
+            Queue<Pair> que = new LinkedList<>();
+            que.add(new Pair(node, -1));
+            
+            while(!que.isEmpty()) {
+                int srcNode = que.peek().node;
+                int parentNode = que.peek().parent;
+                que.remove();
+                
+                for(int adjNode : adj.get(srcNode)) {
+                    if(!visited[adjNode]) {
+                        visited[adjNode] = true;
+                        que.add(new Pair(adjNode, srcNode));
+                    }
+                    
+                    else if(parentNode != adjNode) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+    }
+    
+    public static boolean isCycle(ArrayList<ArrayList<Integer>> adj) {
+        int n = adj.size();
+        boolean[] visited = new boolean[n + 1];
+        
+        for(int i = 0; i < n; i++) {
+            if(!visited[i]) {
+                if(checkCycle(i, n, adj, visited)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    public static boolean dfsDCG(
+        int node, 
+        ArrayList<ArrayList<Integer>> adj,
+        boolean[] visited,
+        boolean[] pathVisited
+    ) {
+        
+        visited[node] = true;
+        pathVisited[node] = true;
+            
+        for(int it : adj.get(node)) {
+            if(!visited[it]) {
+                if(dfsDCG(it, adj, visited, pathVisited) == true) {
+                    return true;
+                }
+            }
+            
+            else if(pathVisited[it]) {
+                return true;
+            }
+        }
+        
+        pathVisited[node] = false;
+        return false;
+        
+    }
+    // Function to detect cycle in a directed graph using DFS
+    // Through kahan's algorithm can be used for detecting cycle in a directed graph using BFS by comparing
+    // total size of the adjecent list and total output of topological array
+    // if total_size of output is < total_size of adjList then it's an cycle 
+    // because topological sort algorithm only works for a-cyclic graph and if the output is then the actual input then it's cyclic
+    public static boolean isCyclic(ArrayList<ArrayList<Integer>> adj) {
+        // code here
+        int V = adj.size();
+        boolean[] visited = new boolean[V];
+        boolean[] pathVisited = new boolean[V];
+        
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                if(dfsDCG(i, adj, visited, pathVisited) == true) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    // Topological Sort it's only valid of DAG(Directed A-cyclic Graph)
+    public static void dfsTOPO(
+        int i, 
+        boolean[] visited, 
+        ArrayList<ArrayList<Integer>> adj, 
+        Stack<Integer> st
+    ) {
+        visited[i] = true;
+        
+        for(int it : adj.get(i)) {
+            if(!visited[it]) {
+                dfs(it, visited, adj, st);
+            }
+        }
+        
+        st.push(i);
+        
+    }
+    
+    public static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
+        // Your code here
+        int V = adj.size();
+        boolean[] visited = new boolean[V];
+        Stack<Integer> st = new Stack<>();
+        ArrayList<Integer> ans = new ArrayList<Integer>();
+        
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                dfsTOPO(i, visited, adj, st);
+            }
+        }
+        
+        while(!st.isEmpty()) {
+            ans.add(st.peek());
+            st.pop();
+        }
+        
+        return ans;
+    }
+
+    // Topological Sort using BFS with Kah's algorithm
+    public static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
+        int V = adj.size();
+        // First step:- calculate all the degree
+        int[] indegree = new int[V];
+        for(int i = 0; i < V; i++) {
+            for(int it : adj.get(i)) {
+                indegree[it] += 1;
+            }
+        }
+
+        // Second step:- is to add into queue who's indegree is 0
+        Queue<Integer> que = new LinkedList<>();
+        for(int i = 0; i < V; i++) {
+            if(indegree[i] == 0) {
+                que.add(i);
+            }
+        }
+
+        //Third step:- loop until queue is empty and decrement the indegree 
+        //if the same is found and if the indegree is 0 then add it to the queue
+        ArrayList<Integer> ans = new  ArrayList<Integer>();
+        while(!que.isEmpty()) {
+            int node = que.peek();
+            que.remove();
+            ans.add(node);
+
+            for(int it : adj.get(node)) {
+                indegree[it]--;
+                if(indegree[it] == 0) {
+                    que.add(it);
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    // Shortest Path in Undirected
+    public static int[] shortestPath(ArrayList<ArrayList<Integer>> adj, int src) {
+        // code here
+        int n = adj.size();
+        int[] distance = new int[n];
+        Queue<Integer> que = new LinkedList<>();
+
+        for(int i = 0; i < n; i++) {
+            distance[i] = (int) 1e9;
+        }
+        distance[src] = 0;
+        que.add(src);
+        
+        while(!que.isEmpty()) {
+            int node = que.peek();
+            que.remove();
+            for(int it : adj.get(node)) {
+                if(distance[node] + 1 < distance[it]) {
+                    distance[it] = 1 + distance[node];
+                    que.add(it);
+                }
+            }
+        }
+        
+        for(int i = 0; i < n; i++) {
+            if(distance[i] == (int) 1e9) {
+                distance[i] = -1;
+            }   
+        }
+        
+        return distance;
+    }
+
+    // Shortest path in Directed Acyclic Graph
+    static class Pair {
+        int vertices;
+        int weight;
+        Pair(int _vertices, int _weight) {
+            this.vertices = _vertices;
+            this.weight = _weight;
+        }
+    }
+    
+    public void topoSort(int node, ArrayList<ArrayList<Pair>> adj, boolean[] visited, Stack<Integer> st) {
+        visited[node] = true;
+        for(int i = 0; i < adj.get(node).size(); i++) {
+            int v = adj.get(node).get(i).vertices;
+            if(!visited[v]) {
+                topoSort(v, adj, visited, st);
+            }
+        }
+        st.add(node);
+    }
+
+    public int[] shortestPath(int V, int E, int[][] edges) {
+        // Code here
+        // Created an adjecent List
+        ArrayList<ArrayList<Pair>> adj = new ArrayList<ArrayList<Pair>>();
+        for(int i = 0; i < V; i++) {
+            ArrayList<Pair> newPair = new ArrayList<Pair>();
+            adj.add(newPair);
+        }
+        for(int i = 0; i < E; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int weight = edges[i][2];
+            adj.get(u).add(new Pair(v, weight));
+        }
+        
+        // visited array with stack for topological output
+        boolean[] visited = new boolean[V];
+        Stack<Integer> st = new Stack<Integer>();
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                topoSort(i, adj, visited, st);
+            }
+        }
+        
+        // create an distance array and maintain the distance logic
+        int[] distance = new int[V];
+        for(int i = 0; i < V; i++) {
+            distance[i] = (int) 1e9;
+        }
+        distance[0] = 0;
+        while(!st.isEmpty()) {
+            int node = st.peek();
+            st.pop();
+            
+            for(int i = 0; i < adj.get(node).size(); i++) {
+                int v = adj.get(node).get(i).vertices;
+                int weight = adj.get(node).get(i).weight;
+                if(distance[node] + weight < distance[v]) {
+                    distance[v] = distance[node] + weight;
+                }
+            }
+        }
+        
+        // remove infinite and add -1 instead
+        for(int i = 0; i < V; i++) {
+            if(distance[i] == (int) 1e9) {
+                distance[i] = -1;
+            }
+        }
+        
+        return distance;
+    }
+}
+
     
     public static void main(String[] args) {
         System.out.println("Try programiz.pro");
