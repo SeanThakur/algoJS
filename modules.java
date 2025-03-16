@@ -1525,6 +1525,48 @@ class Main {
         return subset;
     }
 
+    // counting set bits that is one in the binary for the given n as value
+    public static int countSetBits(int n) {
+        int count = 0;
+        while(n > 0) {
+            int bit = n & 1;
+            count += bit;
+            n = n >> 1;
+        }
+
+        return count;
+    }
+
+    // a raised to power b function -> To find the what is the value of a with power b
+    public static int pow(int a, int b) {
+        int result = 1;
+
+        while(b > 0) {
+            int bit = n & 1;
+            if(bit != 0) {
+                result *= a;
+            }
+            a * a;
+            b = b >> 1;
+        }
+        return result;
+    }
+
+    // Find the value of a*b that is a = 2 and b = 4 that is 2*2*2*2;
+    public static int multiply_(int a, int b) {
+        int result = 0;
+
+        while(b > 0) {
+            int bit = n & 1;
+            if(bit != 0) {
+                result += a;
+            }
+            a += a;
+            b = b >> 1;
+        }
+        return result;
+    }
+
     
     public static void main(String[] args) {
         int[] arr = {4,5,6,-1,-2,0,1,2,3};
@@ -1547,7 +1589,7 @@ class Main {
         // queue.display();
 
         // Finding all the subset within the given array
-        
+
         // int[] subset = new int[]{1,2,3,4};
         // List<List<Integer>> subset_list = new ArrayList<>();
         // int subset_length = subset.length;
