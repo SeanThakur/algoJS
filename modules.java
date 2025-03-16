@@ -1567,12 +1567,59 @@ class Main {
         return result;
     }
 
+    public static int[][] multiplyMatrices(int[][] A, int[][] B) {
+        int N = A.length;
+        int[][] result = new int[N][N];
+        
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < N; k++) {
+                    result[i][j] += A[i][k] * B[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    // Function to generate an identity matrix of size N x N
+    public static int[][] identityMatrix(int N) {
+        int[][] identity = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            identity[i][i] = 1;
+        }
+        return identity;
+    }
+
+    // Function to perform matrix exponentiation
+    public static int[][] matrixPower(int[][] M, int exponent) {
+        int[][] result = identityMatrix(); // Identity matrix
+        int[][] base = M; // Copy of original matrix
+
+        while (exponent > 0) {
+            if ((exponent & 1) == 1) { // If exponent is odd
+                result = multiplyMatrices(result, base);
+            }
+            base = multiplyMatrices(base, base); // Square the base matrix
+            exponent >>= 1; // Right shift to divide by 2
+        }
+        return result;
+    }
+
     
     public static void main(String[] args) {
         int[] arr = {4,5,6,-1,-2,0,1,2,3};
         ArrayList<Integer> sortArr = new ArrayList<>(Arrays.asList(4,5,6,-1,-2,0,1,2,3));
         int[] index = heapSort(arr);
         int[] arr2 = {170, 45, 75, 90, 802, 24, 2, 66};
+        // int[][] M = {
+        //     {1, 1},
+        //     {1, 0}
+        // };
+        
+        // int exponent = 5;
+        // int[][] result = matrixPower(M, exponent);
+
         // System.out.println(Arrays.toString(index));
         // radixSort(arr2);
         // printArray(arr2);
