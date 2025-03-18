@@ -2,7 +2,7 @@
 // Use this editor to write, compile and run your Java code online
 import java.util.ArrayList;
 import java.util.Arrays;
-
+static final int MOD = (int) 1e9 + 7;
 class CustomStack {
         private int[] stack;
         private int capacity;
@@ -1557,7 +1557,7 @@ class Main {
         int result = 0;
 
         while(b > 0) {
-            int bit = n & 1;
+            int bit = b & 1;
             if(bit != 0) {
                 result += a;
             }
@@ -1593,7 +1593,8 @@ class Main {
 
     // Function to perform matrix exponentiation
     public static int[][] matrixPower(int[][] M, int exponent) {
-        int[][] result = identityMatrix(); // Identity matrix
+         int N = M.length; 
+        int[][] result = identityMatrix(N); // Identity matrix for 2*2 
         int[][] base = M; // Copy of original matrix
 
         while (exponent > 0) {
@@ -1606,6 +1607,36 @@ class Main {
         return result;
     }
 
+    public static int NonHomogeneous(int n) {
+        if (n == 1) return 1;
+        if (n == 2) return 2;
+
+        int[][] M = {
+            {1, 1, 3}, // Recurrence with constant `d = 3`
+            {1, 0, 0},
+            {0, 0, 1}
+        };
+
+        int[][] result = matrixPower(M, n - 2);
+        // Calculate F(n) = result[0][0] * F(2) + result[0][1] * F(1) + result[0][2] * 1
+        return result[0][0] * 2 + result[0][1] * 1 + result[0][2];
+    }
+
+    static int VariableCoefficients(int n) {
+        if (n == 1) return 1;
+        if (n == 2) return 2;
+
+        int[][] result = {{1, 0}, {0, 1}}; // Identity matrix
+        for (int i = 2; i <= n; i++) {
+            int a = (i % MOD) + 1;
+            int b = ((i + 1) % MOD) + 2;
+            int[][] matrix = {{a, b}, {1, 0}};
+            result = multiplyMatrices(result, matrix);
+        }
+        
+        // Compute final value using base cases
+        return (int)((1L * result[0][0] * 2 + 1L * result[0][1] * 1) % MOD);
+    }
     
     public static void main(String[] args) {
         int[] arr = {4,5,6,-1,-2,0,1,2,3};
@@ -1644,5 +1675,100 @@ class Main {
         //     subset_list.add(extract(subset, i));
         // }
         // System.out.println(subset_list);
+    }
+}
+
+//Problem:
+
+// You have N switches, each either ON (1) or OFF (0).
+// At each time step, the following rule applies to every switch simultaneously:
+
+// A switch i toggles if its adjacent switches (i-1 and i+1, if they exist) are ON.
+
+// Given the initial state of switches and K time steps, determine the number of states possible after K steps.
+
+public class MatrixExponentiationBitmask {
+
+    static final int MOD = 1_000_000_007;
+
+    // Function to compute the next state given the current state
+    static int getNextState(int currentState, int N) {
+        int nextState = 0;
+        
+        for (int i = 0; i < N; i++) {
+            boolean left = i > 0 && ((currentState >> (i - 1)) & 1) == 1;
+            boolean right = i < N - 1 && ((currentState >> (i + 1)) & 1) == 1;
+            
+            // Toggle rule: switch `i` toggles if adjacent switches are ON
+            boolean toggled = left ^ right;
+            if (toggled) nextState |= (1 << i);
+        }
+        return nextState;
+    }
+
+    // Multiply two matrices
+    static int[][] multiplyMatrices(int[][] A, int[][] B) {
+        int size = A.length;
+        int[][] result = new int[size][size];
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                for (int k = 0; k < size; k++) {
+                    result[i][j] = (int)((result[i][j] + 1L * A[i][k] * B[k][j]) % MOD);
+                }
+            }
+        }
+        return result;
+    }
+
+    // Matrix exponentiation
+    static int[][] matrixPower(int[][] M, int exponent) {
+        int size = M.length;
+        int[][] result = new int[size][size];
+        
+        // Initialize as identity matrix
+        for (int i = 0; i < size; i++) {
+            result[i][i] = 1;
+        }
+        
+        int[][] base = M;
+        while (exponent > 0) {
+            if ((exponent & 1) == 1) {
+                result = multiplyMatrices(result, base);
+            }
+            base = multiplyMatrices(base, base);
+            exponent >>= 1;
+        }
+        return result;
+    }
+
+    static int countPossibleStates(int N, int K, int initialState) {
+        int size = 1 << N;  // Total states = 2^N
+        int[][] transitionMatrix = new int[size][size];
+
+        // Build transition matrix
+        for (int state = 0; state < size; state++) {
+            int nextState = getNextState(state, N);
+            transitionMatrix[state][nextState] = 1;
+        }
+
+        // Matrix exponentiation to compute M^K
+        int[][] resultMatrix = matrixPower(transitionMatrix, K);
+        
+        // Count all possible states after K transitions from initialState
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            count = (count + resultMatrix[initialState][i]) % MOD;
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        int N = 3;  // Number of switches
+        int K = 4;  // Number of time steps
+        int initialState = 0b101;  // Example: [ON, OFF, ON]
+
+        int possibleStates = countPossibleStates(N, K, initialState);
+        System.out.println("Possible states after " + K + " steps: " + possibleStates);
     }
 }
