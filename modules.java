@@ -1622,7 +1622,7 @@ class Main {
         return result[0][0] * 2 + result[0][1] * 1 + result[0][2];
     }
 
-    static int VariableCoefficients(int n) {
+    public static int VariableCoefficients(int n) {
         if (n == 1) return 1;
         if (n == 2) return 2;
 
@@ -1636,6 +1636,41 @@ class Main {
         
         // Compute final value using base cases
         return (int)((1L * result[0][0] * 2 + 1L * result[0][1] * 1) % MOD);
+    }
+
+    // extended Euclidean GCD for 18x + 30y = gcd(18, 30)
+    // to find the value of x and y
+    public static int GCD(int a, int b) {
+        if(b == 0) {
+            return {1, 0, a};
+        }
+
+        int[] result = GCD(b, a % b);    
+        // substitute extended formula here
+        int smallX = result[0];
+        int smallY = result[1];
+        int gcd = result[2];
+        int x = smallY;
+        int y = smallX = (a/b) * smallY;
+        return {x, y, gcd};
+    }
+
+    // Multiplicative Modulo Inverse (a×x)modm=1 
+    // For the inverse of a modulo m to exist, a and m must be coprime, i.e., gcd(a, m) = 1.
+    // For gcd(a, m) = 1, the Extended Euclidean Algorithm finds integers x and y such that:
+    // a×x+m×y=1
+    // The value x (mod m) is the modular inverse.
+    public static int modInverse(int a, int m) {
+        int[] result = GCD(a, m);
+        int x = result[0];
+        int gcd = result[2];
+        
+        if(gcd != 1) {
+            return -1;
+        }
+        // moduling the answer becuase x can be negative
+        int ans = (x % m + m) % m;
+        return ans;
     }
     
     public static void main(String[] args) {
