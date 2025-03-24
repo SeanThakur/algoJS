@@ -1664,13 +1664,32 @@ class Main {
         int[] result = GCD(a, m);
         int x = result[0];
         int gcd = result[2];
-        
+
         if(gcd != 1) {
             return -1;
         }
         // moduling the answer becuase x can be negative
         int ans = (x % m + m) % m;
         return ans;
+    }
+
+    // Binomial Coefficient for combination and permutation 
+    public static int binomialCefficient(int n, int r) {
+        int[][] pascal = new int[n + 1][r + 1];
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= Math.min(i, r); j++) {
+                // Base cases
+                if (j == 0 || j == i) {
+                    pascal[i][j] = 1;
+                } else {
+                    // Pascal's Triangle relation
+                    pascal[i][j] = pascal[i - 1][j - 1] + pascal[i - 1][j];
+                }
+            }
+        }
+        
+        return pascal[n][r];
     }
     
     public static void main(String[] args) {
