@@ -18,3 +18,26 @@
 # -f is used to check wheather the input is file or directory forexp:- [[ -f today.txt ]]; will return true because today.txt is file not __dir__
 # same -d is used to check wheater the input is __dir__ or not
 # -x, -r, -w these are permission flags it is used to check if the fiel has these permission or not
+
+# IF-STATEMENTS
+# if-else
+if [ 1 -gt 1 ]; then
+    echo "test passed";
+else
+    echo "test failed";
+fi
+#else-if
+if [ 1 -eq 1 ]; then
+    echo "First test passed";
+elif [ 2 -eq 2 ]; then
+    echo "Second test passed";
+else
+    echo "Test failed";
+fi
+# Case-Statment
+number=999
+case "$number" in
+    [0-9]) echo "One digit number";;
+    [0-9][0-9]) echo "Two digit number";;
+    *) echo "number is above two digit";;
+esac
