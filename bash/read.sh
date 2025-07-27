@@ -5,6 +5,7 @@ read -p "What are you looking for? " lookingFor;
 # -s is the flag you used when you don't want to display the input in the terminal
 # -t is the flat you should use when you want to add time limit for any parameter and -t take input in seconds
 # forexample -t 5 tell the script to wait for 5 sec and go to the next input
+# -N flag is responsible to limit the character for the input
 read -s -p "ya ya!! what's the password? " password;
 echo;
 echo "Here is your information what you have provided so far";
