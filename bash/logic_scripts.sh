@@ -41,9 +41,13 @@ case "$number" in
     [0-9][0-9]) echo "Two digit number";;
     *) echo "number is above two digit";;
 esac
-#Loops
+#While Loops
 no=17
 while [ $no -gt 10 ]; do
     echo $no;
     no=$(( $no - 1))
+done
+#For loops
+for element in one two three; do
+    echo "This is $element"
 done
