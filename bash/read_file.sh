@@ -1,0 +1,6 @@
+#!/opt/homebrew/bin/bash
+
+while read line; do
+    echo $line;
+done < "$1"
+exit 0;
